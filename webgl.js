@@ -14,17 +14,19 @@ void main() {
 
 var fragmentShaderSource = `
 precision mediump float;
+uniform mediump vec3 u_color;
 uniform highp float u_timer;
 
 void main()
 {
-	gl_FragColor = vec4(0, 1, 0, 1) - (u_timer - .3);
+	gl_FragColor = vec4(u_color.x, u_color.y, u_color.z, 1) - (u_timer - .3);
 }`;
 
 var gl;
 var aspectLoc;
 var timerLoc;
 var offsetLoc;
+var colorLoc;
 
 $(document).ready(function() {
 
@@ -82,7 +84,7 @@ $(document).ready(function() {
 	gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
 
 	var points = [];
-	for(var i = 0; i < 500; i++) {
+	for(var i = 0; i < 400; i++) {
 		var direction = (Math.random() * 2.0 * Math.PI) - Math.PI;
 		var velocity = Math.pow(Math.random() * 0.4, 1.0/5.0) + (Math.random() * .05) - .025;
 
@@ -99,6 +101,7 @@ $(document).ready(function() {
 	aspectLoc = gl.getUniformLocation(program, "u_aspect");
 	timerLoc = gl.getUniformLocation(program, "u_timer");
 	offsetLoc = gl.getUniformLocation(program, "u_offset")
+	colorLoc = gl.getUniformLocation(program, "u_color")
 
 	gl.uniform1f(aspectLoc, gl.canvas.width / gl.canvas.height);
 
@@ -117,11 +120,12 @@ function run() {
 	var byBoom = -1;
 	for(var i = 0; i < booms.length; i++) {
 		booms[i].time += deltaTime;
-		gl.uniform1f(timerLoc, booms[i].time / 1900.0);
+		gl.uniform1f(timerLoc, booms[i].time / 1700.0);
 		gl.uniform2fv(offsetLoc, [booms[i].x, booms[i].y]);
-		gl.drawArrays(gl.POINTS, 0, 500);
+		gl.uniform3fv(colorLoc, booms[i].color);
+		gl.drawArrays(gl.POINTS, 0, 400);
 
-		if(booms[i].time > 2500) {
+		if(booms[i].time > 2200) {
 			byBoom = i;
 		}
 	}
@@ -133,10 +137,22 @@ function run() {
 	window.requestAnimationFrame(run);
 }
 
+var colors = [
+[1, .1, .1],
+[1, .5, 0],
+[.9, .9, 0],
+[.1, .3, 1],
+[.8, 0, .9],
+[.7, .7, .7],
+[1, 1, 1],
+[.3, 1, .3]];
+
+
 function Boom(x = 0, y = 0) {
 	this.time = 0;
 	this.x = x;
 	this.y = y;
+	this.color = colors[Math.floor(Math.random() * colors.length)];
 }
 
 
