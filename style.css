@@ -21,7 +21,7 @@ body {
 	background-color: #000000;
 }
 
-canvas {
+body, #container, canvas {
 	-webkit-touch-callout: none;
 	-webkit-user-select: none;
 	-khtml-user-select: none;
