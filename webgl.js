@@ -46,6 +46,10 @@ $(document).ready(function() {
 		booms.push(new Boom());
 	})
 
+	$("p").on("tap",function(){
+		booms.push(new Boom());
+	});
+
 	$('canvas').width($('#container').width());
 	$('canvas').height($('#container').height());
 
